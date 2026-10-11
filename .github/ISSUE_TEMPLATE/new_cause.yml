@@ -1,0 +1,28 @@
+name: New cause of death
+description: Propose a new check that finds dead or broken dashboards
+labels: ["new-cause", "enhancement"]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Short name
+      placeholder: "Panel uses a deprecated PromQL function"
+    validations:
+      required: true
+  - type: textarea
+    id: signal
+    attributes:
+      label: How can it be detected?
+      description: Which Grafana / Loki / Prometheus API or JSON field shows the problem?
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Example dashboard JSON or panel
+      render: json
+  - type: input
+    id: weight
+    attributes:
+      label: Suggested weight (points subtracted from 100)
+      placeholder: "15"

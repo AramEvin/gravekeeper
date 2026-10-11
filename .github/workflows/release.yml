@@ -1,0 +1,37 @@
+name: Release
+
+# Push a tag like v0.1.1 to build the package and publish a GitHub Release
+# with the wheel, the source archive and the example reports attached.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
+      - run: pytest -q
+      - name: Check the tag matches the package version
+        run: |
+          v=$(python -c "import gravekeeper; print(gravekeeper.__version__)")
+          test "v$v" = "${GITHUB_REF_NAME}" || { echo "Tag ${GITHUB_REF_NAME} != version v$v"; exit 1; }
+      - run: python -m build
+      - name: Release notes from CHANGELOG.md
+        run: |
+          v="${GITHUB_REF_NAME#v}"
+          awk -v v="$v" '$0 ~ "^## \\["v"\\]" {f=1; next} /^## |^\[/ {f=0} f' CHANGELOG.md > notes.md
+          cat notes.md
+      - uses: softprops/action-gh-release@v2
+        with:
+          body_path: notes.md
+          files: |
+            dist/*
+            examples/*.docx

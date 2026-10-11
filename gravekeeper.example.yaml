@@ -1,0 +1,42 @@
+# Gravekeeper configuration. Copy to gravekeeper.yaml and edit.
+# Every key is optional; anything you leave out uses the default shown here.
+
+grafana:
+  url: https://grafana.example.com
+  token_env: GRAFANA_TOKEN        # name of the env var holding the service account token
+  verify_tls: true
+  timeout_seconds: 30
+
+usage:
+  # loki : count dashboard views from Grafana's request logs stored in Loki (enables C01)
+  # none : skip the Abandoned check
+  source: none
+  loki_url: http://loki:3100
+  loki_token_env: LOKI_TOKEN      # optional, for Grafana Cloud Logs or a gateway with auth
+  loki_tenant: ""                 # optional X-Scope-OrgID for multi-tenant Loki
+  selector: '{job="grafana"}'     # stream selector for Grafana's own logs
+  exclude_users_regex: "sa-.*"    # don't count service accounts (incl. Gravekeeper) as views
+
+thresholds:
+  abandoned_days: 90              # C01: no views for this many days
+  stale_days: 180                 # C02: no edits for this many days
+  min_age_days: 30                # newer dashboards are never marked Abandoned
+
+weights:                          # points subtracted from 100 per cause
+  C01: 40   # abandoned
+  C02: 15   # stale
+  C03: 25   # missing datasource
+  C04: 20   # broken datasource
+  C07: 10   # legacy Angular panel, per panel ...
+  C08: 20   # duplicate
+  C09: 15   # ownerless
+  C10: 50   # empty shell
+legacy_cap: 30                    # ... capped at this total
+
+status_bands: { healthy: 80, at_risk: 50, terminal: 20 }   # below terminal = Deceased
+grace_days: { terminal: 30, deceased: 14 }
+
+protect_tags: [keep-alive, critical]   # dashboards with these tags are never flagged
+owner_tag_prefix: "owner:"             # e.g. tag "owner:platform-team"
+check_datasource_health: true
+output_dir: out

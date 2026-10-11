@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# Tools
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Gravekeeper output and local config (may contain internal names and URLs)
+out/
+out-*/
+gravekeeper.yaml
+my.yaml
+findings.json
+
+# Secrets
+.env
+*.token
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store

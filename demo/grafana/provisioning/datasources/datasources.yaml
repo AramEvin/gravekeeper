@@ -1,0 +1,22 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    uid: prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+
+  - name: Loki
+    uid: loki
+    type: loki
+    access: proxy
+    url: http://loki:3100
+
+  # Deliberately broken: this host does not exist (triggers C04).
+  - name: Prometheus (old cluster)
+    uid: prometheus-old
+    type: prometheus
+    access: proxy
+    url: http://prometheus-old-cluster:9090

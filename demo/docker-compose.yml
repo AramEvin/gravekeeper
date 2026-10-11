@@ -1,0 +1,50 @@
+# Gravekeeper demo stack: Grafana + Prometheus + Loki + Alloy.
+# Grafana writes its request logs to a shared volume; Alloy ships them to Loki,
+# which is where Gravekeeper counts dashboard views.
+#
+#   docker compose up -d
+#   python demo/seed.py
+#
+name: gravekeeper-demo
+
+services:
+  grafana:
+    image: grafana/grafana:12.1.1
+    ports: ["3000:3000"]
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_SERVER_ROUTER_LOGGING: "true"     # log every request -> dashboard views
+      GF_LOG_MODE: "console file"
+      GF_LOG_FILE_FORMAT: "text"           # logfmt-style lines
+      GF_PATHS_LOGS: /var/log/grafana
+      GF_USERS_DEFAULT_THEME: dark
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/provisioned-dashboards:ro
+      - grafana-logs:/var/log/grafana
+    depends_on: [prometheus, loki]
+
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    ports: ["9090:9090"]
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+
+  loki:
+    image: grafana/loki:3.5.3
+    ports: ["3100:3100"]
+    command: ["-config.file=/etc/loki/loki.yaml"]
+    volumes:
+      - ./loki.yaml:/etc/loki/loki.yaml:ro
+
+  alloy:
+    image: grafana/alloy:v1.10.0
+    command: ["run", "/etc/alloy/config.alloy", "--storage.path=/var/lib/alloy/data"]
+    volumes:
+      - ./config.alloy:/etc/alloy/config.alloy:ro
+      - grafana-logs:/var/log/grafana:ro
+    depends_on: [loki]
+
+volumes:
+  grafana-logs:

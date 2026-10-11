@@ -1,0 +1,17 @@
+# Config for the local demo stack (demo/docker-compose.yml).
+grafana:
+  url: http://localhost:3000
+  token_env: GRAFANA_TOKEN
+
+usage:
+  source: loki
+  loki_url: http://localhost:3100
+  selector: '{job="grafana"}'
+  exclude_users_regex: "sa-.*"
+
+thresholds:
+  abandoned_days: 90
+  stale_days: 180
+  min_age_days: 0      # demo dashboards are brand new, so allow them to be "abandoned"
+
+output_dir: out

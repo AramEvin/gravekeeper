@@ -1,0 +1,43 @@
+name: Bug report
+description: Something does not work as expected
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for reporting! Please remove tokens, internal hostnames and dashboard names you can't share.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you run, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Output of `gravekeeper check`
+      render: text
+  - type: input
+    id: grafana
+    attributes:
+      label: Grafana version
+      placeholder: "12.1.1"
+    validations:
+      required: true
+  - type: input
+    id: gravekeeper
+    attributes:
+      label: Gravekeeper version
+      placeholder: "output of gravekeeper --version"
+    validations:
+      required: true
+  - type: dropdown
+    id: usage
+    attributes:
+      label: Usage source
+      options: ["none", "loki"]
+  - type: textarea
+    id: config
+    attributes:
+      label: Relevant part of gravekeeper.yaml
+      render: yaml

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and ideas
+    url: https://github.com/AramEvin/gravekeeper/discussions
+    about: Ask questions and share how you use Gravekeeper.
+  - name: Security issue
+    url: https://github.com/AramEvin/gravekeeper/security/advisories/new
+    about: Please report vulnerabilities privately.

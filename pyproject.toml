@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gravekeeper"
+dynamic = ["version"]
+description = "Find dead, broken and abandoned Grafana dashboards and write Death Certificates (DOCX) for them."
+readme = "README.md"
+requires-python = ">=3.9"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "Gravekeeper contributors" }]
+keywords = ["grafana", "observability", "dashboards", "loki", "prometheus", "lgtm", "sre", "docx", "governance"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: System Administrators",
+  "Intended Audience :: Information Technology",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: System :: Monitoring",
+  "Topic :: Office/Business",
+]
+dependencies = [
+  "requests>=2.28",
+  "PyYAML>=6.0",
+  "docxtpl>=0.16",
+  "python-docx>=1.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "ruff>=0.6", "build>=1.0", "pre-commit>=3.5"]
+
+[project.urls]
+Homepage = "https://github.com/AramEvin/gravekeeper"
+Issues = "https://github.com/AramEvin/gravekeeper/issues"
+Changelog = "https://github.com/AramEvin/gravekeeper/blob/main/CHANGELOG.md"
+
+[project.scripts]
+gravekeeper = "gravekeeper.cli:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "gravekeeper.__version__" }
+
+[tool.setuptools.packages.find]
+include = ["gravekeeper*"]
+
+[tool.setuptools.package-data]
+gravekeeper = ["templates/*.docx"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM"]
+ignore = ["UP007", "UP045", "SIM105"]
