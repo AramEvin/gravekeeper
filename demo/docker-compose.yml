@@ -32,7 +32,7 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
 
   loki:
-    image: grafana/loki:3.5.3
+    image: grafana/loki:3.7.9
     ports: ["3100:3100"]
     command: ["-config.file=/etc/loki/loki.yaml"]
     volumes:
